@@ -11,7 +11,7 @@ class App extends Component{
     constructor(props){
         super(props);
         this.state = {
-            mode:'create',
+            mode:'welcome',
             selected_content_id:2,
             subject:{title:'WEB', sub:'World wide Web!'},
             welcome:{title:'Welcome', desc:'Hello, React!'},
@@ -19,6 +19,7 @@ class App extends Component{
                 {id:1, title:'HTML', desc:'HTML is for information'},
                 {id:2, title:'CSS', desc:'CSS is for design'},
                 {id:3, title:'JavaScript', desc:'JavaScript is for interactive'},
+                {id:4, title:'React', desc:'React is for Website'}
             ]
         }
         this.max_content_id = this.state.contents.length;
@@ -29,7 +30,6 @@ class App extends Component{
                 var data = this.state.contents[i];
                 if(data.id === this.state.selected_content_id){
                     return data;
-                    break;
                 }
                 i = i + 1;
             }
@@ -41,7 +41,6 @@ class App extends Component{
             _desc = this.state.welcome.desc;
             _article = <ReadContent title={_title} desc={_desc}></ReadContent>;
         }else if(this.state.mode === 'read'){
-            var i = 0;
             var _content = this.getReadContent();
             _article = <ReadContent title={_content.title} desc={_content.desc}></ReadContent>;
         }else if(this.state.mode === 'create'){
@@ -98,7 +97,26 @@ class App extends Component{
             ></TOC>
             <Control
                 onChangeMode={function(_mode){
-                    this.setState({mode:_mode});
+                    if(_mode === 'delete'){
+                        if(window.confirm('Really?')){
+                            var _contents = Array.from(this.state.contents);
+                            var i = 0;
+                            while(i < this.state.contents.length){
+                                if(_contents[i].id === this.state.selected_content_id){
+                                    _contents.splice(i,1);
+                                    break;
+                                }
+                                i = i + 1;
+                            }
+                            this.setState({
+                                mode:'welcome',
+                                contents:_contents
+                            });
+                            alert('deleted!');
+                        }
+                    } else {
+                        this.setState({mode:_mode});
+                    }
                 }.bind(this)}
             ></Control>            
             {this.getContent()}
